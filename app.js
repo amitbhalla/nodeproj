@@ -46,5 +46,27 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
+app.patch('/api/v1/tours/:id', (req, res) => {
+  const id = +req.params.id;
+  const tour = tours.find((el) => el.id === id);
+
+  if (tour) {
+    const updatedTour = { ...tour, ...req.body };
+    tours[id] = updatedTour;
+
+    fs.writeFile(
+      './dev-data/data/tours-sample.json',
+      JSON.stringify(tours),
+      (err) => {
+        res.status(201);
+        res.json({ status: 200, data: { updatedTour } });
+      }
+    );
+  } else {
+    res.status(404);
+    res.json({ status: 404, data: 'No tour with this id exists' });
+  }
+});
+
 //  Event loop
 app.listen(PORT, ADDR, () => console.log(`listening to ${PORT} on ${ADDR}`));
