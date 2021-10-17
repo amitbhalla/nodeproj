@@ -12,13 +12,13 @@ app.use(express.json());
 // Helper functions
 const tours = JSON.parse(fs.readFileSync('./dev-data/data/tours-sample.json'));
 
-//  Routes
-app.get('/api/v1/tours', (req, res) => {
+// Route functions
+const getAllTours = (req, res) => {
   res.status(200);
   res.json({ status: 200, data: { tours } });
-});
+};
 
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTourById = (req, res) => {
   const id = +req.params.id;
   const tour = tours.find((el) => el.id === id);
 
@@ -29,9 +29,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
     res.status(404);
     res.json({ status: 404, data: 'No tour with this id exists' });
   }
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const postNewTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   const newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
@@ -43,9 +43,9 @@ app.post('/api/v1/tours', (req, res) => {
       res.json({ status: 200, data: { newTour } });
     }
   );
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const patchTourById = (req, res) => {
   const id = +req.params.id;
   const tour = tours.find((el) => el.id === id);
 
@@ -65,9 +65,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
     res.status(404);
     res.json({ status: 404, data: 'No tour with this id exists' });
   }
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTourById = (req, res) => {
   const id = +req.params.id;
   const tour = tours.find((el) => el.id === id);
 
@@ -88,7 +88,15 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     res.status(404);
     res.json({ status: 404, data: 'No tour with this id exists' });
   }
-});
+};
+
+//  Routes
+app.route('/api/v1/tours').get(getAllTours).post(postNewTour);
+app
+  .route('/api/v1/tours/:id')
+  .get(getTourById)
+  .patch(patchTourById)
+  .delete(deleteTourById);
 
 //  Event loop
 app.listen(PORT, ADDR, () => console.log(`listening to ${PORT} on ${ADDR}`));
