@@ -1,5 +1,4 @@
 import express from 'express';
-import { response } from 'express';
 import fs from 'fs';
 
 //  Base config
@@ -59,7 +58,7 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       JSON.stringify(tours),
       (err) => {
         res.status(201);
-        res.json({ status: 200, data: { updatedTour } });
+        res.json({ status: 201, data: { updatedTour } });
       }
     );
   } else {
